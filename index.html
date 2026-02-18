@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Engineering Graphics Solver</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2c2c2c;
+            --accent: #00bcd4;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Grid Layout for Inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            width: 100px;
+            text-align: right;
+            font-family: monospace;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-calc {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        .btn-clear {
+            background-color: #d32f2f;
+            color: white;
+            flex: 0.3;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        /* Output Highlighting */
+        .calculated {
+            border-color: #4caf50 !important;
+            background-color: #1b3a1d !important;
+            color: #fff !important;
+        }
+
+        .notes {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <h1>PROJECTION SOLVER</h1>
+        <div class="subtitle">Complete Analytical Solution for Engineering Graphics</div>
+    </div>
+
+    <div class="input-grid">
+        
+        <div class="section">
+            <div class="section-title">True Properties</div>
+            <div class="input-group">
+                <label>True Length (TL)</label>
+                <input type="number" id="tl" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>Angle with HP (θ)</label>
+                <input type="number" id="theta" placeholder="degrees">
+            </div>
+            <div class="input-group">
+                <label>Angle with VP (Φ)</label>
+                <input type="number" id="phi" placeholder="degrees">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">View Properties</div>
+            <div class="input-group">
+                <label>Front View Length (FV)</label>
+                <input type="number" id="fv" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>Top View Length (TV)</label>
+                <input type="number" id="tv" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>Apparent Angle HP (α)</label>
+                <input type="number" id="alpha" placeholder="degrees">
+            </div>
+            <div class="input-group">
+                <label>Apparent Angle VP (β)</label>
+                <input type="number" id="beta" placeholder="degrees">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Spacial & Coordinates</div>
+            <div class="input-group">
+                <label>Height Difference (Δh)</label>
+                <input type="number" id="dh" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>Front Difference (Δd)</label>
+                <input type="number" id="dd" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>Dist. b/w Projectors (D)</label>
+                <input type="number" id="d" placeholder="mm">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="btn-container">
+        <button class="btn-clear" onclick="clearFields()">Reset</button>
+        <button class="btn-calc" onclick="solve()">Solve Missing Data</button>
+    </div>
+
+    <div class="notes">
+        Tip: Enter ANY known values. The system will iteratively solve for the rest.<br>
+        Fields highlighted in <span style="color:#4caf50">Green</span> are the calculated answers.
+    </div>
+
+</div>
+
+<script>
+    // Helper: Convert degrees to radians and back
+    const rad = (deg) => deg * (Math.PI / 180);
+    const deg = (rad) => rad * (180 / Math.PI);
+
+    // State object to track values
+    let state = {};
+
+    function getId(id) { return document.getElementById(id); }
+
+    function clearFields() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(i => {
+            i.value = '';
+            i.classList.remove('calculated');
+        });
+    }
+
+    function solve() {
+        // 1. READ INPUTS
+        // We load all inputs into our state object. 
+        // If a box is empty, it is null.
+        const ids = ['tl', 'theta', 'phi', 'fv', 'tv', 'alpha', 'beta', 'dh', 'dd', 'd'];
+        state = {};
+        
+        ids.forEach(id => {
+            let val = getId(id).value;
+            state[id] = val === "" ? null : parseFloat(val);
+            // Remove previous highlights
+            getId(id).classList.remove('calculated');
+        });
+
+        // 2. THE SOLVER LOOP
+        // We run this loop multiple times. 
+        // If we find one value (like TL), it might unlock the formula for another (like FV).
+        // We repeat until no new values are found (convergence).
+        
+        let changed = true;
+        let loops = 0;
+
+        while(changed && loops < 10) {
+            changed = false;
+            let oldState = {...state};
+
+            // --- FORMULA SET 1: Basic Trig Relations (TL, Theta, Phi vs TV, FV) ---
+            // TV = TL * cos(theta)
+            if (state.tv === null && state.tl !== null && state.theta !== null) state.tv = state.tl * Math.cos(rad(state.theta));
+            if (state.tl === null && state.tv !== null && state.theta !== null) state.tl = state.tv / Math.cos(rad(state.theta));
+            if (state.theta === null && state.tv !== null && state.tl !== null) state.theta = deg(Math.acos(state.tv / state.tl));
+
+            // FV = TL * cos(phi)
+            if (state.fv === null && state.tl !== null && state.phi !== null) state.fv = state.tl * Math.cos(rad(state.phi));
+            if (state.tl === null && state.fv !== null && state.phi !== null) state.tl = state.fv / Math.cos(rad(state.phi));
+            if (state.phi === null && state.fv !== null && state.tl !== null) state.phi = deg(Math.acos(state.fv / state.tl));
+
+            // --- FORMULA SET 2: Vertical/Horizontal Components (Delta H, Delta D) ---
+            // Delta H = TL * sin(theta)
+            if (state.dh === null && state.tl !== null && state.theta !== null) state.dh = state.tl * Math.sin(rad(state.theta));
+            if (state.tl === null && state.dh !== null && state.theta !== null) state.tl = state.dh / Math.sin(rad(state.theta));
+            if (state.theta === null && state.dh !== null && state.tl !== null) state.theta = deg(Math.asin(state.dh / state.tl));
+
+            // Delta D = TL * sin(phi)
+            if (state.dd === null && state.tl !== null && state.phi !== null) state.dd = state.tl * Math.sin(rad(state.phi));
+            if (state.tl === null && state.dd !== null && state.phi !== null) state.tl = state.dd / Math.sin(rad(state.phi));
+            if (state.phi === null && state.dd !== null && state.tl !== null) state.phi = deg(Math.asin(state.dd / state.tl));
+
+            // --- FORMULA SET 3: Pythagorean Relations (The View Triangles) ---
+            // FV^2 = D^2 + dh^2
+            if (state.fv === null && state.d !== null && state.dh !== null) state.fv = Math.sqrt(state.d**2 + state.dh**2);
+            if (state.d === null && state.fv !== null && state.dh !== null) state.d = Math.sqrt(state.fv**2 - state.dh**2);
+            if (state.dh === null && state.fv !== null && state.d !== null) state.dh = Math.sqrt(state.fv**2 - state.d**2);
+
+            // TV^2 = D^2 + dd^2
+            if (state.tv === null && state.d !== null && state.dd !== null) state.tv = Math.sqrt(state.d**2 + state.dd**2);
+            if (state.d === null && state.tv !== null && state.dd !== null) state.d = Math.sqrt(state.tv**2 - state.dd**2);
+            if (state.dd === null && state.tv !== null && state.d !== null) state.dd = Math.sqrt(state.tv**2 - state.d**2);
+            
+            // TL^2 = TV^2 + dh^2
+            if (state.tl === null && state.tv !== null && state.dh !== null) state.tl = Math.sqrt(state.tv**2 + state.dh**2);
+            
+            // TL^2 = FV^2 + dd^2
+            if (state.tl === null && state.fv !== null && state.dd !== null) state.tl = Math.sqrt(state.fv**2 + state.dd**2);
+
+            // --- FORMULA SET 4: Apparent Angles (Alpha, Beta) ---
+            // tan(alpha) = dh / d
+            if (state.alpha === null && state.dh !== null && state.d !== null) state.alpha = deg(Math.atan(state.dh / state.d));
+            // tan(beta) = dd / d
+            if (state.beta === null && state.dd !== null && state.d !== null) state.beta = deg(Math.atan(state.dd / state.d));
+
+            // Check if anything changed this loop
+            for (let key in state) {
+                if (state[key] !== null && oldState[key] === null) changed = true;
+            }
+            loops++;
+        }
+
+        // 3. WRITE OUTPUTS
+        ids.forEach(id => {
+            const el = getId(id);
+            if (state[id] !== null) {
+                // If the box was empty before, fill it and highlight it
+                if (el.value === "") {
+                    el.value = Number(state[id]).toFixed(2);
+                    el.classList.add('calculated');
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
