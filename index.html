@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Engineering Graphics Solver</title>
+    <title>Pro EG Solver v2.0 (With Coordinates)</title>
     <style>
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --input-bg: #2c2c2c;
-            --accent: #00bcd4;
+            --accent: #00e676; /* Changed to a sharper Green */
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
             --border: #333;
@@ -51,20 +51,22 @@
         /* Grid Layout for Inputs */
         .input-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
         .section {
             background-color: var(--card-bg);
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
         }
 
         .section-title {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
@@ -73,33 +75,40 @@
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             flex: 1;
+            padding-right: 10px;
         }
 
         input {
             background-color: var(--input-bg);
             border: 1px solid var(--border);
             color: white;
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
-            width: 100px;
+            width: 80px;
             text-align: right;
             font-family: monospace;
+            font-size: 0.9rem;
             transition: border-color 0.2s;
         }
 
         input:focus {
             outline: none;
             border-color: var(--accent);
+        }
+
+        /* Highlight for Points Section to make it stand out */
+        .points-section {
+            border: 1px solid #00e67655;
         }
 
         /* Buttons */
@@ -153,12 +162,32 @@
 
 <div class="container">
     <div>
-        <h1>PROJECTION SOLVER</h1>
-        <div class="subtitle">Complete Analytical Solution for Engineering Graphics</div>
+        <h1>PRO EG SOLVER v2.0</h1>
+        <div class="subtitle">Complete Analytical Solution with Point Coordinates</div>
     </div>
 
     <div class="input-grid">
         
+        <div class="section points-section">
+            <div class="section-title">Point Coordinates</div>
+            <div class="input-group">
+                <label>a' (Above HP)</label>
+                <input type="number" id="a_prime" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>a (In Front VP)</label>
+                <input type="number" id="a" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>b' (Above HP)</label>
+                <input type="number" id="b_prime" placeholder="mm">
+            </div>
+            <div class="input-group">
+                <label>b (In Front VP)</label>
+                <input type="number" id="b" placeholder="mm">
+            </div>
+        </div>
+
         <div class="section">
             <div class="section-title">True Properties</div>
             <div class="input-group">
@@ -167,46 +196,46 @@
             </div>
             <div class="input-group">
                 <label>Angle with HP (θ)</label>
-                <input type="number" id="theta" placeholder="degrees">
+                <input type="number" id="theta" placeholder="deg">
             </div>
             <div class="input-group">
                 <label>Angle with VP (Φ)</label>
-                <input type="number" id="phi" placeholder="degrees">
+                <input type="number" id="phi" placeholder="deg">
             </div>
         </div>
 
         <div class="section">
             <div class="section-title">View Properties</div>
             <div class="input-group">
-                <label>Front View Length (FV)</label>
+                <label>Front View (FV)</label>
                 <input type="number" id="fv" placeholder="mm">
             </div>
             <div class="input-group">
-                <label>Top View Length (TV)</label>
+                <label>Top View (TV)</label>
                 <input type="number" id="tv" placeholder="mm">
             </div>
             <div class="input-group">
-                <label>Apparent Angle HP (α)</label>
-                <input type="number" id="alpha" placeholder="degrees">
+                <label>Apparent Angle α</label>
+                <input type="number" id="alpha" placeholder="deg">
             </div>
             <div class="input-group">
-                <label>Apparent Angle VP (β)</label>
-                <input type="number" id="beta" placeholder="degrees">
+                <label>Apparent Angle β</label>
+                <input type="number" id="beta" placeholder="deg">
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">Spacial & Coordinates</div>
+            <div class="section-title">Differences</div>
             <div class="input-group">
-                <label>Height Difference (Δh)</label>
+                <label>Height Diff (Δh)</label>
                 <input type="number" id="dh" placeholder="mm">
             </div>
             <div class="input-group">
-                <label>Front Difference (Δd)</label>
+                <label>Front Diff (Δd)</label>
                 <input type="number" id="dd" placeholder="mm">
             </div>
             <div class="input-group">
-                <label>Dist. b/w Projectors (D)</label>
+                <label>Dist. Projectors (D)</label>
                 <input type="number" id="d" placeholder="mm">
             </div>
         </div>
@@ -215,22 +244,19 @@
 
     <div class="btn-container">
         <button class="btn-clear" onclick="clearFields()">Reset</button>
-        <button class="btn-calc" onclick="solve()">Solve Missing Data</button>
+        <button class="btn-calc" onclick="solve()">Solve All</button>
     </div>
 
     <div class="notes">
-        Tip: Enter ANY known values. The system will iteratively solve for the rest.<br>
-        Fields highlighted in <span style="color:#4caf50">Green</span> are the calculated answers.
+        <strong>Tip:</strong> You can enter values for <strong>a'</strong> and <strong>b'</strong> to automatically calculate Δh.<br>
+        Green boxes = Calculated results.
     </div>
 
 </div>
 
 <script>
-    // Helper: Convert degrees to radians and back
     const rad = (deg) => deg * (Math.PI / 180);
     const deg = (rad) => rad * (180 / Math.PI);
-
-    // State object to track values
     let state = {};
 
     function getId(id) { return document.getElementById(id); }
@@ -245,53 +271,52 @@
 
     function solve() {
         // 1. READ INPUTS
-        // We load all inputs into our state object. 
-        // If a box is empty, it is null.
-        const ids = ['tl', 'theta', 'phi', 'fv', 'tv', 'alpha', 'beta', 'dh', 'dd', 'd'];
+        const ids = ['tl', 'theta', 'phi', 'fv', 'tv', 'alpha', 'beta', 'dh', 'dd', 'd', 'a_prime', 'a', 'b_prime', 'b'];
         state = {};
         
         ids.forEach(id => {
             let val = getId(id).value;
             state[id] = val === "" ? null : parseFloat(val);
-            // Remove previous highlights
             getId(id).classList.remove('calculated');
         });
 
-        // 2. THE SOLVER LOOP
-        // We run this loop multiple times. 
-        // If we find one value (like TL), it might unlock the formula for another (like FV).
-        // We repeat until no new values are found (convergence).
-        
         let changed = true;
         let loops = 0;
 
-        while(changed && loops < 10) {
+        while(changed && loops < 15) {
             changed = false;
             let oldState = {...state};
 
-            // --- FORMULA SET 1: Basic Trig Relations (TL, Theta, Phi vs TV, FV) ---
-            // TV = TL * cos(theta)
+            // --- NEW: COORDINATE LOGIC ---
+            // If we have points, we can find differences
+            if (state.dh === null && state.a_prime !== null && state.b_prime !== null) state.dh = Math.abs(state.a_prime - state.b_prime);
+            if (state.dd === null && state.a !== null && state.b !== null) state.dd = Math.abs(state.a - state.b);
+
+            // Note: We generally don't reverse calculate points (e.g., finding b' from a' and dh) 
+            // because we don't know if it's up or down without more info. 
+            // But this app will effectively use points to drive the main solution.
+
+            // --- STANDARD SOLVER LOGIC ---
+
+            // 1. Trig Relations
             if (state.tv === null && state.tl !== null && state.theta !== null) state.tv = state.tl * Math.cos(rad(state.theta));
             if (state.tl === null && state.tv !== null && state.theta !== null) state.tl = state.tv / Math.cos(rad(state.theta));
             if (state.theta === null && state.tv !== null && state.tl !== null) state.theta = deg(Math.acos(state.tv / state.tl));
 
-            // FV = TL * cos(phi)
             if (state.fv === null && state.tl !== null && state.phi !== null) state.fv = state.tl * Math.cos(rad(state.phi));
             if (state.tl === null && state.fv !== null && state.phi !== null) state.tl = state.fv / Math.cos(rad(state.phi));
             if (state.phi === null && state.fv !== null && state.tl !== null) state.phi = deg(Math.acos(state.fv / state.tl));
 
-            // --- FORMULA SET 2: Vertical/Horizontal Components (Delta H, Delta D) ---
-            // Delta H = TL * sin(theta)
+            // 2. Component Relations
             if (state.dh === null && state.tl !== null && state.theta !== null) state.dh = state.tl * Math.sin(rad(state.theta));
             if (state.tl === null && state.dh !== null && state.theta !== null) state.tl = state.dh / Math.sin(rad(state.theta));
             if (state.theta === null && state.dh !== null && state.tl !== null) state.theta = deg(Math.asin(state.dh / state.tl));
 
-            // Delta D = TL * sin(phi)
             if (state.dd === null && state.tl !== null && state.phi !== null) state.dd = state.tl * Math.sin(rad(state.phi));
             if (state.tl === null && state.dd !== null && state.phi !== null) state.tl = state.dd / Math.sin(rad(state.phi));
             if (state.phi === null && state.dd !== null && state.tl !== null) state.phi = deg(Math.asin(state.dd / state.tl));
 
-            // --- FORMULA SET 3: Pythagorean Relations (The View Triangles) ---
+            // 3. Pythagoras (Views)
             // FV^2 = D^2 + dh^2
             if (state.fv === null && state.d !== null && state.dh !== null) state.fv = Math.sqrt(state.d**2 + state.dh**2);
             if (state.d === null && state.fv !== null && state.dh !== null) state.d = Math.sqrt(state.fv**2 - state.dh**2);
@@ -302,19 +327,14 @@
             if (state.d === null && state.tv !== null && state.dd !== null) state.d = Math.sqrt(state.tv**2 - state.dd**2);
             if (state.dd === null && state.tv !== null && state.d !== null) state.dd = Math.sqrt(state.tv**2 - state.d**2);
             
-            // TL^2 = TV^2 + dh^2
+            // TL Cross checks
             if (state.tl === null && state.tv !== null && state.dh !== null) state.tl = Math.sqrt(state.tv**2 + state.dh**2);
-            
-            // TL^2 = FV^2 + dd^2
             if (state.tl === null && state.fv !== null && state.dd !== null) state.tl = Math.sqrt(state.fv**2 + state.dd**2);
 
-            // --- FORMULA SET 4: Apparent Angles (Alpha, Beta) ---
-            // tan(alpha) = dh / d
+            // 4. Apparent Angles
             if (state.alpha === null && state.dh !== null && state.d !== null) state.alpha = deg(Math.atan(state.dh / state.d));
-            // tan(beta) = dd / d
             if (state.beta === null && state.dd !== null && state.d !== null) state.beta = deg(Math.atan(state.dd / state.d));
 
-            // Check if anything changed this loop
             for (let key in state) {
                 if (state[key] !== null && oldState[key] === null) changed = true;
             }
@@ -325,7 +345,6 @@
         ids.forEach(id => {
             const el = getId(id);
             if (state[id] !== null) {
-                // If the box was empty before, fill it and highlight it
                 if (el.value === "") {
                     el.value = Number(state[id]).toFixed(2);
                     el.classList.add('calculated');
